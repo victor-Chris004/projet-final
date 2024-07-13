@@ -1,0 +1,20 @@
+[
+ {
+  "Id": "idArt",
+  "nom": "nomArt",
+  "prix": "prixArt",
+  "quantite": "qteArt"
+ },
+ {
+  "Id": "41",
+  "nom": "kilato",
+  "prix": "850",
+  "quantite": "5"
+ },
+ {
+  "Id": "009",
+  "nom": "bora",
+  "prix": "1000",
+  "quantite": "50"
+ }
+]
