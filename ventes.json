@@ -1,0 +1,7 @@
+[
+    {"client": "client",
+    "produit": "nom", 
+    "quantite": "quantite",
+    "date": "date"
+    }
+]
