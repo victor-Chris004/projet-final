@@ -1,146 +1,149 @@
 import json
-from articles import *
-ventes = []
+import os
+articles = []
 
-def charger_ventes():
-    global ventes
-    try:
-        with open("ventes.json", "r") as file:
-            ventes = json.load(file)
-    except FileNotFoundError:
-        ventes = []
+nom_fichier = "articles.json"
+noms_articles_existants = []
 
-def sauvegarder_ventes():
+if os.path.exists(nom_fichier):
+    with open(nom_fichier,'r') as fichier:
         try:
-    with open("articles.json","r") as fichier:
+            articles = json.load(fichier)
+        except json.JSONDecodeError:
+                articles = []
+
+def validationNumArticle(idArt):
+    #print("Ecrivez vous meme le code")
+    list = idArt.isdecimal()
+    while list == False:
+        prixArt = input("Erreur du num")
+        list = prixArt.isdecimal()
+        if list == True:
+           break
+
+def validationNomArticle(nomArt):
+    #print("Ecrivez vous meme le code")
+    list = nomArt.isnumeric()
+    while list == True:
+        prixArt = input("Erreur de l'article")
+        list = prixArt.isnumeric()
+        if list == False:
+            break    
+
+def validationPrixArticle(prixArt):
+    #print("Ecrivez vous meme le code")
+    list = prixArt.isdecimal()
+    while list == False:
+        prixArt = input("Erreur du prix")
+        list = prixArt.isdecimal()
+        if list == True:
+            break
+
+def validationQteArticle(qteArt):
+    #print("Ecrivez vous meme le code")
+    list = qteArt.isnumeric()
+    while list == False:
+        prixArt = input("Erreur de la qte")
+        list = prixArt.isnumeric()
+        if list == True:
+            break
+
+def ajoutArticle():
+    global idArt
+    global nomArt
+    global prixArt
+    global qteArt
+
+    idArt = input("saisir le numero de l'article: ")
+    validationNumArticle(idArt)
+    nomArt = input("saisir le nom de l'article: ")
+    validationNomArticle(nomArt)
+    prixArt = input("saisir le prix de l'article: ")
+    validationPrixArticle(prixArt)
+    qteArt = input("saisir la quantite de l'article: ")
+    validationQteArticle(qteArt)
+
+    article = {"Id":idArt , "nom":nomArt , "prix":prixArt , "quantite":qteArt}
+
+    try:
+        with open("articles.json","r") as fichier:
             articles = json.load(fichier)
     except FileNotFoundError:
         articles = []
     articles.append(article)
-    
-    with open("ventes.json", "w") as file:
-        json.dump(ventes, file, indent=4)
+    with open("articles.json","w") as fichier:
+        json.dump(articles,fichier, indent=3 )
 
-def enregistrer_vente():
-    while True:
-       
-        client = input("Entrez le nom du client: ")
-        if client.isalpha():
-            break
-        else:
-            print("Le nom du client ne doit contenir que des lettres.")
 
-    while True:
-        choix_recherche = input("Voulez-vous rechercher le produit par nom ou par ID ? (nom/id): ").lower()
-        if choix_recherche in ["nom", "id"]:
-            break
-        else:
-            print("Choix invalide, veuillez entrer 'nom' ou 'id'")
-
-    produit_trouve = None
-    if choix_recherche == "nom":
-        while True:
-            nom_produit = input("Entrez le nom du produit: ")
-            if nom_produit.isalpha():
-                produit_trouve = next((produit for produit in produits if produit["nom"] == nom_produit), None)
-                if produit_trouve:
-                    break
-                else:
-                    print("Produit non trouvé.")
-            else:
-                print("Le nom du produit ne doit contenir que des lettres.")
-    else:  # choix_recherche == "id"
-        while True:
-            try:
-                id_produit = int(input("Entrez l'ID du produit: "))
-                produit_trouve = next((produit for produit in produits if produit["id_produit"] == id_produit), None)
-                if produit_trouve:
-                    break
-                else:
-                    print("Produit non trouvé.")
-            except ValueError:
-                print("Veuillez entrer un ID valide.")
-
-    while True:
-        try:
-            quantite = int(input("Entrez la quantité vendue: "))
-            if quantite > 0:
-                break
-            else:
-                print("La quantité doit être un entier positif.")
-        except ValueError:
-            print("Veuillez entrer un nombre entier.")
-            
-    date = input("Entrez la date de la vente (YYYY-MM-DD): ")
-
-    if produit_trouve["quantite"] >= quantite:
-        vente = {"client": client, "produit": produit_trouve["nom"], "quantite": quantite, "date": date}
-
-        try:
-            with open("articles.json","r") as fichier:
-                articles = json.load(fichier)
-        except FileNotFoundError:
-            vente = []
-        ventes.append(vente)
-        produit_trouve["quantite"] -= quantite
-        sauvegarder_ventes()
-        sauvegarder_produits()
-        with open("articles.json","w") as fichier:
-            json.dump(articles,fichier, indent=3 )
-             # Sauvegarder les produits mis à jour
-        print("Vente enregistrée avec succès!")
+def AfficherArticle():
+    if len(articles) == 0:
+        return "\nAucun article disponible ! \n"
     else:
-        print("Quantité insuffisante en stock.")
+        return articles
 
-def afficher_ventes():
-    if not ventes:
-        print("Aucune vente enregistrée.")
-    else:
-        for vente in ventes:
-            print(f"Client: {vente["client"]}, Produit: {vente["produit"]}, Quantité: {vente["quantite"]}, Date: {vente["date"]}")
-
-def ventes_par_client():
-    while True:
-        client = input("Entrez le nom du client: ")
-        if client.isalpha():
-            break
+def Rechercher_par_Nom():
+    with open('articles.json','r') as fichier:
+        articles = json.load(fichier)
+    verification = input("saisir le nom de l'article rechecher: ")
+    i = 0
+    while (i <= len(articles) - 1):
+        if verification == articles[i]["nom"]:
+            print("nom:",articles[i]['nom'] ,"prix:",articles[i]['prix'] ,"quantité:",articles[i]["quantite"])
+            return i
+        elif (i != len(articles)-1):
+            i += 1
         else:
-            print("Le nom du client ne doit contenir que des lettres.")
+            print("Erreur de l'articles")
+            break
 
-    ventes_client = [vente for vente in ventes if vente["client"] == client]
-    if not ventes_client:
-        print("Aucune vente trouvée pour ce client.")
-    else:
-        for index, vente in enumerate(ventes_client, start=1):
-            print(f"{index}. Produit: {vente["produit"]}, Quantité: {vente["quantite"]}, Date: {vente["date"]}")
+def Rechercher_par_ID():
+    with open('articles.json','r') as fichier:
+        articles = json.load(fichier)
+    verification = input("saisir l'ID de l'article rechecher: ")
+    verification = validationQteArticle(verification)
+    verification = int(verification)
+    i = 0
+    while (i <= len(articles) - 1):
+        if verification == articles[i]["nomArt"]:
+            print("nom:",articles[i]['nom'] ,"prix:",articles[i]['prix'] ,"quantité:",articles[i]["quantite"])
+            return i - 1
+        elif (i != len(articles)-1):
+            i += 1
+        else:
+            print("Erreur du numero")
+            break
 
-        choix_suppression = input("Voulez-vous supprimer une de ces ventes ? (oui/non): ").lower()
-        if choix_suppression == "oui":
-            try:
-                numero_vente = int(input("Entrez le numéro de la vente à supprimer: "))
-                vente_a_supprimer = ventes_client[numero_vente - 1]
-                supprimer_vente(vente_a_supprimer)
-                print("==== Vente Supprimée avec succès ====")
-            except (IndexError, ValueError):
-                print("Numéro de vente invalide.")
+def supprimerDouble():
+    with open('articles.json','r') as fichier:
+        articles = json.load(fichier)
+    supprimer = Rechercher_par_Nom()
+    del articles[supprimer]
+    with open("articles.json","w") as fichier:
+        json.dump(articles,fichier, indent=1 ) 
 
-def supprimer_vente(vente_a_supprimer):
-    global ventes
-    ventes = [vente for vente in ventes if vente != vente_a_supprimer]
-    sauvegarder_ventes()
-
-def chargerDonnees(fichier):
+def charger_produits():
+    global produits
     try:
-        with open(fichier, 'r') as f:
-            data = json.load(f)
-            global articles, vente
-            articles = data['articles']
-            vente = data['ventes']
-            print("Données chargées avec succès!")
+        with open('produits.json', 'r') as f:
+            produits = json.load(f)
     except FileNotFoundError:
-        print("Fichier non trouvé.")
-    except json.JSONDecodeError:
-        print("Erreur de décodage JSON.")
+        produits = []
 
-# Charger les ventes au démarrage
-charger_ventes()
+def mettre_a_jour_stock(produit_nom, quantite_vendue):
+    for produit in produits:
+        if produit['nom'].lower() == produit_nom.lower():
+            produit['quantite'] -= quantite_vendue
+            break
+
+def verifier_stock(produit_nom, quantite_vendue):
+    for produit in produits:
+        if produit['nom'].lower() == produit_nom.lower():
+            return produit['quantite'] >= quantite_vendue
+    return False
+
+def sauvegarder_produits():
+    with open('produits.json', 'w') as f:
+        json.dump(produits, f)
+
+# Charger les produits au démarrage
+charger_produits()
