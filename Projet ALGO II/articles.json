@@ -1,0 +1,38 @@
+[
+ {
+  "Id": "idArt",
+  "nom": "nomArt",
+  "prix": "prixArt",
+  "quantite": "qteArt"
+ },
+ {
+  "Id": "41",
+  "nom": "kilato",
+  "prix": "850",
+  "quantite": "5"
+ },
+ {
+  "Id": "1",
+  "nom": "moi",
+  "prix": "150",
+  "quantite": "20"
+ },
+ {
+  "Id": "001",
+  "nom": "moi",
+  "prix": "150",
+  "quantite": "20"
+ },
+ {
+  "Id": "002",
+  "nom": "moi",
+  "prix": "1500",
+  "quantite": "258"
+ },
+ {
+  "Id": "011",
+  "nom": "moi",
+  "prix": "150",
+  "quantite": "20"
+ }
+]
